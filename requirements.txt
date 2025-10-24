@@ -4,3 +4,4 @@ Flask-Mail==0.9.1
 simplejson==3.16.0
 flask-login
 cryptography
+flask-talisman

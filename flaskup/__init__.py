@@ -6,6 +6,7 @@ from flask import Flask
 from flask_babel import Babel
 from flask_mail import Mail
 from flask_login import LoginManager, UserMixin
+from flask_talisman import Talisman
 
 
 # Flaskup!
@@ -37,6 +38,7 @@ MAIL_PORT = 25
 
 # Create our app
 app = Flask(__name__)
+app.config['DEBUG'] = False
 app.config.from_object(__name__)
 app.config.from_envvar('FLASKUP_CONFIG')
 
@@ -64,6 +66,26 @@ babel = Babel(app)
 
 # Mail
 mail = Mail(app)
+
+# Detect local environment
+is_local = os.environ.get("FLASK_ENV", "development") == "development"
+
+# Configure basic CSP and enforce HTTPS
+Talisman(
+    app,
+    content_security_policy={
+        'default-src': [
+            "'self'",
+            "'unsafe-inline'",
+            "https://cdn.jsdelivr.net",
+            "https://cdnjs.cloudflare.com"
+        ]
+    },
+    force_https=not is_local,  # HTTPS only in production
+    strict_transport_security=True,
+    strict_transport_security_preload=True,
+    strict_transport_security_max_age=31536000
+)
 
 login_manager = LoginManager(app)
 login_manager.login_view = 'login'   # route name for login page
