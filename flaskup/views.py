@@ -8,6 +8,8 @@ from flaskup import app, User
 from flaskup.utils import send_mail
 from flaskup.models import SharedFile, NginxUploadFile
 from flask_login import login_user, login_required, logout_user, current_user
+import logging
+import werkzeug.exceptions
 
 
 @app.route('/')
@@ -208,3 +210,18 @@ def show_delete_file(key, secret):
         return redirect(url_for('show_upload_form'))
 
     return render_template('show_delete_file.html', f=shared_file)
+
+def register_secure_error_handlers(app):
+    @app.errorhandler(werkzeug.exceptions.NotFound)
+    @app.errorhandler(404)
+    def handle_404(e):
+        app.logger.warning(f"404 Error intercepted: {e}")
+        return jsonify(message="The requested resource was not found."), 404
+
+    @app.errorhandler(werkzeug.exceptions.InternalServerError)
+    @app.errorhandler(500)
+    def handle_500(e):
+        app.logger.exception(f"500 Internal Server Error: {e}")
+        return jsonify(message="Something went wrong. Please try again later."), 500
+
+register_secure_error_handlers(app)

@@ -7,6 +7,8 @@ from flask_babel import Babel
 from flask_mail import Mail
 from flask_login import LoginManager, UserMixin
 from flask_talisman import Talisman
+import logging
+from logging.handlers import RotatingFileHandler
 
 
 # Flaskup!
@@ -103,6 +105,24 @@ def load_user(user_id):
     if user_id == 'admin':
         return User(user_id)
     return None
+
+# Ensure logs directory exists
+if not os.path.exists('logs'):
+    os.makedirs('logs')
+
+# Configure rotating log handler
+log_file = os.path.join('logs', 'app.log')
+handler = RotatingFileHandler(log_file, maxBytes=5000000, backupCount=5)
+
+# Use a secure, timestamped format
+formatter = logging.Formatter(
+    '%(asctime)s [%(levelname)s] %(message)s'
+)
+handler.setFormatter(formatter)
+handler.setLevel(logging.WARNING)
+
+app.logger.addHandler(handler)
+app.logger.setLevel(logging.WARNING)
 
 # Load dependencies
 import flaskup.views
