@@ -44,6 +44,10 @@ app.config['DEBUG'] = False
 app.config.from_object(__name__)
 app.config.from_envvar('FLASKUP_CONFIG')
 
+# === File Upload Security Settings ===
+app.config['MAX_CONTENT_LENGTH'] = 10 * 1024 * 1024  # 10 MB limit
+ALLOWED_EXTENSIONS = {'jpg', 'jpeg', 'png', 'pdf'}
+
 assert app.config['SECRET_KEY'] is not None, \
     "You must define SECRET_KEY"
 assert app.config['FLASKUP_MAX_DAYS'] > 0

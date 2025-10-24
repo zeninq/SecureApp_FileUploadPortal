@@ -55,6 +55,8 @@ def logout():
 
 @app.route('/upload', methods=['POST'])
 def upload_file():
+    def allowed_file(filename):
+        return '.' in filename and filename.rsplit('.', 1)[1].lower() in ALLOWED_EXTENSIONS
     if request.headers.getlist("X-Forwarded-For"):
         remote_ip = request.headers.getlist("X-Forwarded-For")[0]
     else:
@@ -107,6 +109,11 @@ def upload_file():
         # Werkzeug `FileStorage` (normal HTTP Post)
         if 'myfile' in request.files and request.files['myfile']:
             upload_file = request.files['myfile']
+        # === Input Validation: File Type Restriction ===
+            if not allowed_file(upload_file.filename):
+                message = _("File type not allowed. Please upload JPG, PNG, or PDF files only.")
+                app.logger.warning(f"Blocked invalid upload: {upload_file.filename}")
+                return jsonify(message=message), 400
 
     if upload_file is None:
         # no upload file
