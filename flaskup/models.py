@@ -3,6 +3,7 @@ import uuid
 import simplejson
 import shutil
 import stat
+from cryptography.fernet import Fernet, InvalidToken
 from datetime import date, timedelta
 from werkzeug.utils import secure_filename
 from flask import abort, render_template
@@ -17,6 +18,12 @@ def handle_remove_readonly(func, path, exc_info):
         func(path)
     except Exception:
         pass
+
+def get_cipher():
+    key = os.environ.get("FLASKUP_META_KEY")
+    if not key:
+        return None
+    return Fernet(key.encode() if isinstance(key, str) else key)
 
 class SharedFile():
     """
@@ -61,8 +68,19 @@ class SharedFile():
         """
         relative_path = cls.key_to_path(key)
         path = os.path.join(app.config['FLASKUP_UPLOAD_FOLDER'], relative_path)
-        with open(os.path.join(path, key + cls._JSON_FILENAME)) as json_file:
-            infos = simplejson.load(json_file, object_hook=date_decoder)
+        cipher = get_cipher()
+        target = os.path.join(path, key + cls._JSON_FILENAME)
+        with open(target, "rb") as f:
+            raw = f.read()
+
+        if cipher:
+            try:
+                decrypted = cipher.decrypt(raw)
+            except InvalidToken:
+                raise ValueError("Metadata decryption failed")
+            infos = simplejson.loads(decrypted.decode("utf-8"), object_hook=date_decoder)
+        else:
+            infos = simplejson.loads(raw.decode("utf-8"), object_hook=date_decoder)
             return cls(**infos)
 
     @classmethod
@@ -137,8 +155,15 @@ class SharedFile():
         infos['size'] = self.size
         infos['password_identifier'] = self.password_identifier
         path = os.path.join(app.config['FLASKUP_UPLOAD_FOLDER'], self.relative_path)
-        with open(os.path.join(path, self.key + self._JSON_FILENAME), 'w') as json_file:
-            simplejson.dump(infos, json_file, cls=date_encoder)
+        cipher = get_cipher()
+        json_bytes = simplejson.dumps(infos, cls=date_encoder).encode("utf-8")
+
+        target = os.path.join(path, self.key + self._JSON_FILENAME)
+        with open(target, "wb") as f:
+            if cipher:
+                f.write(cipher.encrypt(json_bytes))
+            else:
+                f.write(json_bytes)
 
         # notify admins
         if 'add' in app.config['FLASKUP_NOTIFY'] and notify:
