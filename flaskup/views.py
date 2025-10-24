@@ -4,14 +4,51 @@ import os
 from flask import render_template, url_for, redirect, request, abort, flash
 from flask import send_file, make_response, jsonify
 from flask_babel import gettext as _
-from flaskup import app
+from flaskup import app, User
 from flaskup.utils import send_mail
 from flaskup.models import SharedFile, NginxUploadFile
+from flask_login import login_user, login_required, logout_user, current_user
 
 
 @app.route('/')
+def index():
+    from flask_login import current_user
+    if not getattr(current_user, 'is_authenticated', False):
+        return redirect(url_for('login'))
+    return redirect(url_for('show_upload_form'))
+
+# ------------------------
+# Simple admin login pages
+# ------------------------
+
+@app.route('/upload_form')
+@login_required
 def show_upload_form():
     return render_template('show_upload_form.html')
+
+@app.route('/login', methods=['GET', 'POST'])
+def login():
+    # don't allow logged-in users to see login page
+    if current_user and getattr(current_user, 'is_authenticated', False):
+        return redirect(url_for('show_upload_form'))
+
+    if request.method == 'POST':
+        username = request.form.get('username', '')
+        password = request.form.get('password', '')
+        # NOTE: hardcoded credentials only for the course demo — replace with proper user store later
+        if username == 'admin' and password == 'admin123':
+            user = User('admin')  # ✅ Proper User object
+            login_user(user)
+            return redirect(url_for('show_upload_form'))
+        flash(_('Invalid credentials'), 'error')
+    return render_template('login.html')
+
+
+@app.route('/logout')
+@login_required
+def logout():
+    logout_user()
+    return redirect(url_for('login'))
 
 
 @app.route('/upload', methods=['POST'])
@@ -72,7 +109,7 @@ def upload_file():
     if upload_file is None:
         # no upload file
         message = _("The file is required.")
-        if request.is_xhr:
+        if request.headers.get("X-Requested-With") == "XMLHttpRequest":
             return jsonify(message=message), 400
         else:
             return render_template('show_upload_form.html', error=message)
@@ -111,7 +148,7 @@ def upload_file():
                                        recipient=contact)
                 send_mail(subject, body, [contact])
 
-    if request.is_xhr:
+    if request.headers.get("X-Requested-With") == "XMLHttpRequest":
         return jsonify(url=url_for('show_uploaded_file', key=shared_file.key,
                        secret=shared_file.delete_key))
     else:
@@ -158,6 +195,7 @@ def get_file(key, filename):
 
 
 @app.route('/delete/<key>/<secret>/', methods=['GET', 'POST'])
+@login_required
 def show_delete_file(key, secret):
     shared_file = SharedFile.get_or_404(key)
 

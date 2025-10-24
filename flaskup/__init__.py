@@ -5,6 +5,7 @@ import os
 from flask import Flask
 from flask_babel import Babel
 from flask_mail import Mail
+from flask_login import LoginManager, UserMixin
 
 
 # Flaskup!
@@ -39,7 +40,6 @@ app = Flask(__name__)
 app.config.from_object(__name__)
 app.config.from_envvar('FLASKUP_CONFIG')
 
-
 assert app.config['SECRET_KEY'] is not None, \
     "You must define SECRET_KEY"
 assert app.config['FLASKUP_MAX_DAYS'] > 0
@@ -64,6 +64,23 @@ babel = Babel(app)
 
 # Mail
 mail = Mail(app)
+
+login_manager = LoginManager(app)
+login_manager.login_view = 'login'   # route name for login page
+
+# Minimal User class — simple single admin user for project purposes
+class User(UserMixin):
+    def __init__(self, user_id: str):
+        self.id = user_id
+
+# Loader callback used by flask-login to reload user object from session
+@login_manager.user_loader
+def load_user(user_id):
+    # For this project we only support a single hardcoded admin 'admin'.
+    # In a real app you'd load the user from a database.
+    if user_id == 'admin':
+        return User(user_id)
+    return None
 
 # Load dependencies
 import flaskup.views

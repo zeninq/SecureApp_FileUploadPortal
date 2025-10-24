@@ -2,13 +2,21 @@ import os
 import uuid
 import simplejson
 import shutil
+import stat
 from datetime import date, timedelta
-from werkzeug import secure_filename
+from werkzeug.utils import secure_filename
 from flask import abort, render_template
 from flaskup import app
 from flaskup.utils import send_mail
 from flaskup.jsonutils import date_encoder, date_decoder
 
+def handle_remove_readonly(func, path, exc_info):
+    """Clear read-only file attributes and retry deletion."""
+    try:
+        os.chmod(path, stat.S_IWRITE)
+        func(path)
+    except Exception:
+        pass
 
 class SharedFile():
     """
@@ -138,12 +146,21 @@ class SharedFile():
             body = render_template('emails/notify_add_body.txt', f=self)
             send_mail(subject, body, app.config['FLASKUP_ADMINS'])
 
-    def delete(self, notify=True):
-        """
-        Remove the folder where the shared file is stored.
-        """
-        shutil.rmtree(os.path.join(app.config['FLASKUP_UPLOAD_FOLDER'], self.path))
-
+    def delete(self):
+        """Safely delete uploaded file and directory (even if read-only)."""
+        folder_path = os.path.join(app.config['FLASKUP_UPLOAD_FOLDER'], self.path)
+        try:
+            shutil.rmtree(folder_path, onerror=handle_remove_readonly)
+        except PermissionError:
+            # Retry with forced chmod if still locked
+            for root, dirs, files in os.walk(folder_path):
+                for fname in files:
+                    fpath = os.path.join(root, fname)
+                    try:
+                        os.chmod(fpath, stat.S_IWRITE)
+                    except Exception:
+                        pass
+            shutil.rmtree(folder_path, ignore_errors=True)
         # notify admins
         if 'delete' in app.config['FLASKUP_NOTIFY'] and notify:
             subject = render_template('emails/notify_delete_subject.txt', f=self)
