@@ -1,0 +1,445 @@
+
+<!DOCTYPE html>
+<html>
+<head>
+
+<meta charset="UTF-8">
+
+<title>
+    Bandit Report
+</title>
+
+<style>
+
+html * {
+    font-family: "Arial", sans-serif;
+}
+
+pre {
+    font-family: "Monaco", monospace;
+}
+
+.bordered-box {
+    border: 1px solid black;
+    padding-top:.5em;
+    padding-bottom:.5em;
+    padding-left:1em;
+}
+
+.metrics-box {
+    font-size: 1.1em;
+    line-height: 130%;
+}
+
+.metrics-title {
+    font-size: 1.5em;
+    font-weight: 500;
+    margin-bottom: .25em;
+}
+
+.issue-description {
+    font-size: 1.3em;
+    font-weight: 500;
+}
+
+.candidate-issues {
+    margin-left: 2em;
+    border-left: solid 1px; LightGray;
+    padding-left: 5%;
+    margin-top: .2em;
+    margin-bottom: .2em;
+}
+
+.issue-block {
+    border: 1px solid LightGray;
+    padding-left: .5em;
+    padding-top: .5em;
+    padding-bottom: .5em;
+    margin-bottom: .5em;
+}
+
+.issue-sev-high {
+    background-color: Pink;
+}
+
+.issue-sev-medium {
+    background-color: NavajoWhite;
+}
+
+.issue-sev-low {
+    background-color: LightCyan;
+}
+
+</style>
+</head>
+
+<body>
+
+<div id="metrics">
+    <div class="metrics-box bordered-box">
+        <div class="metrics-title">
+            Metrics:<br>
+        </div>
+        Total lines of code: <span id="loc">581</span><br>
+        Total lines skipped (#nosec): <span id="nosec">0</span>
+    </div>
+</div>
+
+
+
+<br>
+<div id="skipped">
+<div class="bordered-box">
+<b>Skipped files:</b><br><br>
+flaskup/console.py <b>reason:</b> syntax error while parsing AST from file<br>
+</div>
+</div>
+
+
+<br>
+<div id="results">
+    
+<div id="issue-0">
+<div class="issue-block issue-sev-medium">
+    <b>hardcoded_tmp_directory: </b> Probable insecure usage of temp file/directory.<br>
+    <b>Test ID:</b> B108<br>
+    <b>Severity: </b>MEDIUM<br>
+    <b>Confidence: </b>MEDIUM<br>
+    <b>CWE: </b><a href="https://cwe.mitre.org/data/definitions/377.html" target="_blank">CWE-377</a><br>
+    <b>File: </b><a href="flaskup/__init__.py" target="_blank">flaskup/__init__.py</a><br>
+    <b>Line number: </b>16<br>
+    <b>More info: </b><a href="https://bandit.readthedocs.io/en/1.8.6/plugins/b108_hardcoded_tmp_directory.html" target="_blank">https://bandit.readthedocs.io/en/1.8.6/plugins/b108_hardcoded_tmp_directory.html</a><br>
+
+<div class="code">
+<pre>
+15	FLASKUP_TITLE = &#x27;Flaskup!&#x27;
+16	FLASKUP_UPLOAD_FOLDER = &#x27;/tmp/flaskup&#x27;
+17	FLASKUP_MAX_DAYS = 30
+</pre>
+</div>
+
+
+</div>
+</div>
+
+<div id="issue-1">
+<div class="issue-block issue-sev-low">
+    <b>assert_used: </b> Use of assert detected. The enclosed code will be removed when compiling to optimised byte code.<br>
+    <b>Test ID:</b> B101<br>
+    <b>Severity: </b>LOW<br>
+    <b>Confidence: </b>HIGH<br>
+    <b>CWE: </b><a href="https://cwe.mitre.org/data/definitions/703.html" target="_blank">CWE-703</a><br>
+    <b>File: </b><a href="flaskup/__init__.py" target="_blank">flaskup/__init__.py</a><br>
+    <b>Line number: </b>51<br>
+    <b>More info: </b><a href="https://bandit.readthedocs.io/en/1.8.6/plugins/b101_assert_used.html" target="_blank">https://bandit.readthedocs.io/en/1.8.6/plugins/b101_assert_used.html</a><br>
+
+<div class="code">
+<pre>
+50	
+51	assert app.config[&#x27;SECRET_KEY&#x27;] is not None, \
+52	    &quot;You must define SECRET_KEY&quot;
+53	assert app.config[&#x27;FLASKUP_MAX_DAYS&#x27;] &gt; 0
+</pre>
+</div>
+
+
+</div>
+</div>
+
+<div id="issue-2">
+<div class="issue-block issue-sev-low">
+    <b>assert_used: </b> Use of assert detected. The enclosed code will be removed when compiling to optimised byte code.<br>
+    <b>Test ID:</b> B101<br>
+    <b>Severity: </b>LOW<br>
+    <b>Confidence: </b>HIGH<br>
+    <b>CWE: </b><a href="https://cwe.mitre.org/data/definitions/703.html" target="_blank">CWE-703</a><br>
+    <b>File: </b><a href="flaskup/__init__.py" target="_blank">flaskup/__init__.py</a><br>
+    <b>Line number: </b>53<br>
+    <b>More info: </b><a href="https://bandit.readthedocs.io/en/1.8.6/plugins/b101_assert_used.html" target="_blank">https://bandit.readthedocs.io/en/1.8.6/plugins/b101_assert_used.html</a><br>
+
+<div class="code">
+<pre>
+52	    &quot;You must define SECRET_KEY&quot;
+53	assert app.config[&#x27;FLASKUP_MAX_DAYS&#x27;] &gt; 0
+54	assert app.config[&#x27;FLASKUP_KEY_LENGTH&#x27;] &gt;= 1 \
+</pre>
+</div>
+
+
+</div>
+</div>
+
+<div id="issue-3">
+<div class="issue-block issue-sev-low">
+    <b>assert_used: </b> Use of assert detected. The enclosed code will be removed when compiling to optimised byte code.<br>
+    <b>Test ID:</b> B101<br>
+    <b>Severity: </b>LOW<br>
+    <b>Confidence: </b>HIGH<br>
+    <b>CWE: </b><a href="https://cwe.mitre.org/data/definitions/703.html" target="_blank">CWE-703</a><br>
+    <b>File: </b><a href="flaskup/__init__.py" target="_blank">flaskup/__init__.py</a><br>
+    <b>Line number: </b>54<br>
+    <b>More info: </b><a href="https://bandit.readthedocs.io/en/1.8.6/plugins/b101_assert_used.html" target="_blank">https://bandit.readthedocs.io/en/1.8.6/plugins/b101_assert_used.html</a><br>
+
+<div class="code">
+<pre>
+53	assert app.config[&#x27;FLASKUP_MAX_DAYS&#x27;] &gt; 0
+54	assert app.config[&#x27;FLASKUP_KEY_LENGTH&#x27;] &gt;= 1 \
+55	    and app.config[&#x27;FLASKUP_KEY_LENGTH&#x27;] &lt;= 32
+56	assert app.config[&#x27;FLASKUP_DELETE_KEY_LENGTH&#x27;] &gt;= 1 \
+</pre>
+</div>
+
+
+</div>
+</div>
+
+<div id="issue-4">
+<div class="issue-block issue-sev-low">
+    <b>assert_used: </b> Use of assert detected. The enclosed code will be removed when compiling to optimised byte code.<br>
+    <b>Test ID:</b> B101<br>
+    <b>Severity: </b>LOW<br>
+    <b>Confidence: </b>HIGH<br>
+    <b>CWE: </b><a href="https://cwe.mitre.org/data/definitions/703.html" target="_blank">CWE-703</a><br>
+    <b>File: </b><a href="flaskup/__init__.py" target="_blank">flaskup/__init__.py</a><br>
+    <b>Line number: </b>56<br>
+    <b>More info: </b><a href="https://bandit.readthedocs.io/en/1.8.6/plugins/b101_assert_used.html" target="_blank">https://bandit.readthedocs.io/en/1.8.6/plugins/b101_assert_used.html</a><br>
+
+<div class="code">
+<pre>
+55	    and app.config[&#x27;FLASKUP_KEY_LENGTH&#x27;] &lt;= 32
+56	assert app.config[&#x27;FLASKUP_DELETE_KEY_LENGTH&#x27;] &gt;= 1 \
+57	    and app.config[&#x27;FLASKUP_DELETE_KEY_LENGTH&#x27;] &lt;= 32
+58	assert os.access(app.config[&#x27;FLASKUP_UPLOAD_FOLDER&#x27;], os.W_OK), \
+</pre>
+</div>
+
+
+</div>
+</div>
+
+<div id="issue-5">
+<div class="issue-block issue-sev-low">
+    <b>assert_used: </b> Use of assert detected. The enclosed code will be removed when compiling to optimised byte code.<br>
+    <b>Test ID:</b> B101<br>
+    <b>Severity: </b>LOW<br>
+    <b>Confidence: </b>HIGH<br>
+    <b>CWE: </b><a href="https://cwe.mitre.org/data/definitions/703.html" target="_blank">CWE-703</a><br>
+    <b>File: </b><a href="flaskup/__init__.py" target="_blank">flaskup/__init__.py</a><br>
+    <b>Line number: </b>58<br>
+    <b>More info: </b><a href="https://bandit.readthedocs.io/en/1.8.6/plugins/b101_assert_used.html" target="_blank">https://bandit.readthedocs.io/en/1.8.6/plugins/b101_assert_used.html</a><br>
+
+<div class="code">
+<pre>
+57	    and app.config[&#x27;FLASKUP_DELETE_KEY_LENGTH&#x27;] &lt;= 32
+58	assert os.access(app.config[&#x27;FLASKUP_UPLOAD_FOLDER&#x27;], os.W_OK), \
+59	    &quot;No write access to &#x27;%s&#x27;&quot; % app.config[&#x27;FLASKUP_UPLOAD_FOLDER&#x27;]
+60	if app.config[&#x27;FLASKUP_NGINX_UPLOAD_MODULE_ENABLED&#x27;]:
+</pre>
+</div>
+
+
+</div>
+</div>
+
+<div id="issue-6">
+<div class="issue-block issue-sev-low">
+    <b>assert_used: </b> Use of assert detected. The enclosed code will be removed when compiling to optimised byte code.<br>
+    <b>Test ID:</b> B101<br>
+    <b>Severity: </b>LOW<br>
+    <b>Confidence: </b>HIGH<br>
+    <b>CWE: </b><a href="https://cwe.mitre.org/data/definitions/703.html" target="_blank">CWE-703</a><br>
+    <b>File: </b><a href="flaskup/__init__.py" target="_blank">flaskup/__init__.py</a><br>
+    <b>Line number: </b>61<br>
+    <b>More info: </b><a href="https://bandit.readthedocs.io/en/1.8.6/plugins/b101_assert_used.html" target="_blank">https://bandit.readthedocs.io/en/1.8.6/plugins/b101_assert_used.html</a><br>
+
+<div class="code">
+<pre>
+60	if app.config[&#x27;FLASKUP_NGINX_UPLOAD_MODULE_ENABLED&#x27;]:
+61	    assert app.config[&#x27;FLASKUP_NGINX_UPLOAD_MODULE_STORE&#x27;] is not None, \
+62	        &quot;You must define FLASKUP_NGINX_UPLOAD_MODULE_STORE&quot;
+63	    assert not app.config[&#x27;FLASKUP_NGINX_UPLOAD_MODULE_STORE&#x27;] == &#x27;&#x27;, \
+</pre>
+</div>
+
+
+</div>
+</div>
+
+<div id="issue-7">
+<div class="issue-block issue-sev-low">
+    <b>assert_used: </b> Use of assert detected. The enclosed code will be removed when compiling to optimised byte code.<br>
+    <b>Test ID:</b> B101<br>
+    <b>Severity: </b>LOW<br>
+    <b>Confidence: </b>HIGH<br>
+    <b>CWE: </b><a href="https://cwe.mitre.org/data/definitions/703.html" target="_blank">CWE-703</a><br>
+    <b>File: </b><a href="flaskup/__init__.py" target="_blank">flaskup/__init__.py</a><br>
+    <b>Line number: </b>63<br>
+    <b>More info: </b><a href="https://bandit.readthedocs.io/en/1.8.6/plugins/b101_assert_used.html" target="_blank">https://bandit.readthedocs.io/en/1.8.6/plugins/b101_assert_used.html</a><br>
+
+<div class="code">
+<pre>
+62	        &quot;You must define FLASKUP_NGINX_UPLOAD_MODULE_STORE&quot;
+63	    assert not app.config[&#x27;FLASKUP_NGINX_UPLOAD_MODULE_STORE&#x27;] == &#x27;&#x27;, \
+64	        &quot;You must define FLASKUP_NGINX_UPLOAD_MODULE_STORE&quot;
+65	assert isinstance(app.config[&#x27;FLASKUP_MAX_CONTACTS&#x27;], int) and \
+</pre>
+</div>
+
+
+</div>
+</div>
+
+<div id="issue-8">
+<div class="issue-block issue-sev-low">
+    <b>assert_used: </b> Use of assert detected. The enclosed code will be removed when compiling to optimised byte code.<br>
+    <b>Test ID:</b> B101<br>
+    <b>Severity: </b>LOW<br>
+    <b>Confidence: </b>HIGH<br>
+    <b>CWE: </b><a href="https://cwe.mitre.org/data/definitions/703.html" target="_blank">CWE-703</a><br>
+    <b>File: </b><a href="flaskup/__init__.py" target="_blank">flaskup/__init__.py</a><br>
+    <b>Line number: </b>65<br>
+    <b>More info: </b><a href="https://bandit.readthedocs.io/en/1.8.6/plugins/b101_assert_used.html" target="_blank">https://bandit.readthedocs.io/en/1.8.6/plugins/b101_assert_used.html</a><br>
+
+<div class="code">
+<pre>
+64	        &quot;You must define FLASKUP_NGINX_UPLOAD_MODULE_STORE&quot;
+65	assert isinstance(app.config[&#x27;FLASKUP_MAX_CONTACTS&#x27;], int) and \
+66	    app.config[&#x27;FLASKUP_MAX_CONTACTS&#x27;] &gt;= 0, \
+67	    &quot;FLASKUP_MAX_CONTACTS must be an integer, greater than or equal to 0&quot;
+68	
+</pre>
+</div>
+
+
+</div>
+</div>
+
+<div id="issue-9">
+<div class="issue-block issue-sev-low">
+    <b>try_except_pass: </b> Try, Except, Pass detected.<br>
+    <b>Test ID:</b> B110<br>
+    <b>Severity: </b>LOW<br>
+    <b>Confidence: </b>HIGH<br>
+    <b>CWE: </b><a href="https://cwe.mitre.org/data/definitions/703.html" target="_blank">CWE-703</a><br>
+    <b>File: </b><a href="flaskup/models.py" target="_blank">flaskup/models.py</a><br>
+    <b>Line number: </b>19<br>
+    <b>More info: </b><a href="https://bandit.readthedocs.io/en/1.8.6/plugins/b110_try_except_pass.html" target="_blank">https://bandit.readthedocs.io/en/1.8.6/plugins/b110_try_except_pass.html</a><br>
+
+<div class="code">
+<pre>
+18	        func(path)
+19	    except Exception:
+20	        pass
+21	
+</pre>
+</div>
+
+
+</div>
+</div>
+
+<div id="issue-10">
+<div class="issue-block issue-sev-low">
+    <b>try_except_pass: </b> Try, Except, Pass detected.<br>
+    <b>Test ID:</b> B110<br>
+    <b>Severity: </b>LOW<br>
+    <b>Confidence: </b>HIGH<br>
+    <b>CWE: </b><a href="https://cwe.mitre.org/data/definitions/703.html" target="_blank">CWE-703</a><br>
+    <b>File: </b><a href="flaskup/models.py" target="_blank">flaskup/models.py</a><br>
+    <b>Line number: </b>186<br>
+    <b>More info: </b><a href="https://bandit.readthedocs.io/en/1.8.6/plugins/b110_try_except_pass.html" target="_blank">https://bandit.readthedocs.io/en/1.8.6/plugins/b110_try_except_pass.html</a><br>
+
+<div class="code">
+<pre>
+185	                        os.chmod(fpath, stat.S_IWRITE)
+186	                    except Exception:
+187	                        pass
+188	            shutil.rmtree(folder_path, ignore_errors=True)
+</pre>
+</div>
+
+
+</div>
+</div>
+
+<div id="issue-11">
+<div class="issue-block issue-sev-low">
+    <b>try_except_pass: </b> Try, Except, Pass detected.<br>
+    <b>Test ID:</b> B110<br>
+    <b>Severity: </b>LOW<br>
+    <b>Confidence: </b>HIGH<br>
+    <b>CWE: </b><a href="https://cwe.mitre.org/data/definitions/703.html" target="_blank">CWE-703</a><br>
+    <b>File: </b><a href="flaskup/utils.py" target="_blank">flaskup/utils.py</a><br>
+    <b>Line number: </b>16<br>
+    <b>More info: </b><a href="https://bandit.readthedocs.io/en/1.8.6/plugins/b110_try_except_pass.html" target="_blank">https://bandit.readthedocs.io/en/1.8.6/plugins/b110_try_except_pass.html</a><br>
+
+<div class="code">
+<pre>
+15	        mail.send(msg)
+16	    except:
+17	        # this is likely to be a bad recipient address
+18	        # ... or a failure in the MTA
+19	        # in any case, we don&#x27;t want to bother the user with these errors
+20	        # so we fail silently
+21	        pass
+</pre>
+</div>
+
+
+</div>
+</div>
+
+<div id="issue-12">
+<div class="issue-block issue-sev-low">
+    <b>hardcoded_password_string: </b> Possible hardcoded password: 'admin123'<br>
+    <b>Test ID:</b> B105<br>
+    <b>Severity: </b>LOW<br>
+    <b>Confidence: </b>MEDIUM<br>
+    <b>CWE: </b><a href="https://cwe.mitre.org/data/definitions/259.html" target="_blank">CWE-259</a><br>
+    <b>File: </b><a href="flaskup/views.py" target="_blank">flaskup/views.py</a><br>
+    <b>Line number: </b>41<br>
+    <b>More info: </b><a href="https://bandit.readthedocs.io/en/1.8.6/plugins/b105_hardcoded_password_string.html" target="_blank">https://bandit.readthedocs.io/en/1.8.6/plugins/b105_hardcoded_password_string.html</a><br>
+
+<div class="code">
+<pre>
+40	        # NOTE: hardcoded credentials only for the course demo — replace with proper user store later
+41	        if username == &#x27;admin&#x27; and password == &#x27;admin123&#x27;:
+42	            user = User(&#x27;admin&#x27;)  # ✅ Proper User object
+</pre>
+</div>
+
+
+</div>
+</div>
+
+<div id="issue-13">
+<div class="issue-block issue-sev-low">
+    <b>try_except_pass: </b> Try, Except, Pass detected.<br>
+    <b>Test ID:</b> B110<br>
+    <b>Severity: </b>LOW<br>
+    <b>Confidence: </b>HIGH<br>
+    <b>CWE: </b><a href="https://cwe.mitre.org/data/definitions/703.html" target="_blank">CWE-703</a><br>
+    <b>File: </b><a href="flaskup/views.py" target="_blank">flaskup/views.py</a><br>
+    <b>Line number: </b>79<br>
+    <b>More info: </b><a href="https://bandit.readthedocs.io/en/1.8.6/plugins/b110_try_except_pass.html" target="_blank">https://bandit.readthedocs.io/en/1.8.6/plugins/b110_try_except_pass.html</a><br>
+
+<div class="code">
+<pre>
+78	                    continue
+79	            except:
+80	                # An exception was raised when cheking the password.
+81	                # Treat this as a password check failure, so do nothing
+82	                # more.
+83	                pass
+84	
+</pre>
+</div>
+
+
+</div>
+</div>
+
+</div>
+
+</body>
+</html>
